@@ -186,8 +186,7 @@ static void *do_malloc (int nbytes) {
 		return NULL;
 	} 
 
-	if(nunits <= 9){
-        printf("TOTAL UNITS: %d", nunits);
+	if(nunits < TOTALQUICKLISTS){
 		int indexOf = (nunits - 1); // Provides the index of QuickList
 
 		//CHECK if any blocks have been allocated to quick list
