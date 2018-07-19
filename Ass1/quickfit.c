@@ -196,11 +196,11 @@ static void *do_malloc (int nbytes) {
             //Check Quick_list until wrapping around
             while(curr != quick_list[indexOf]){
                 
-                if(nuits == curr->data.size){
+                if(nunits == curr->data.size){
                     prev->data.next = curr->data.next;
                     return (void *)(curr + 1);
                 }
-                
+
                 prev = curr;
                 curr = curr->data.next;
             }
