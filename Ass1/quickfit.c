@@ -11,9 +11,9 @@
 #include "HeapTestEngine.h"
 
 #define MINALLOC    1024     // minimum request to sbrk(), Header blocks
-#define TOTALQUICKLISTS = 10 // NUMBER OF QUICK LISTS -- INCREMENTED BY 16 BYTES
-#define SIZE_OF_BLOCK = 16
-#define MAX_SIZE_BLOCK = 144
+#define TOTALQUICKLISTS  10 // NUMBER OF QUICK LISTS -- INCREMENTED BY 16 BYTES
+#define SIZE_OF_BLOCK  16
+#define MAX_SIZE_BLOCK 144
 
 typedef double Align[2];     // to force alignment of free-list blocks
                         // with worst-case data boundaries
