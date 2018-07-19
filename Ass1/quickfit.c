@@ -185,10 +185,10 @@ static void *do_malloc (int nbytes) {
 	if(nunits == 0){
 		return NULL;
 	} 
-/*
+
 	if(nunits <= TOTALQUICKLISTS){
 		int indexOf = (nunits - 1); // Provides the index of QuickList
-
+/*
 		//CHECK if any blocks have been allocated to quick list
 		if(quick_list[indexOf]->data.next != NULL){
             prev = quick_list[indexOf]->data.next;
@@ -204,8 +204,8 @@ static void *do_malloc (int nbytes) {
                 prev = curr;
                 curr = curr->data.next;
             
-		}
-	}*/
+		}*/
+	}
 
 	//If no space in Quick List is available, utlilize free list
 
