@@ -278,7 +278,7 @@ static void do_free (void *ptr) {
 
     // block points to the header of the freed space
     block = (Header *)ptr - 1;
-    printf("%d", block->size);
+    printf("Block Size: %d\n", block->size);
     // traverse the free-list, place the block in the correct
     // place, to preserve ascending address order
     curr = free_list;
