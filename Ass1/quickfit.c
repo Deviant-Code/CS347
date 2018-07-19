@@ -184,9 +184,9 @@ static void *do_malloc (int nbytes) {
 	//RETURN nothing if # of bytes requested is 0
 	if(nbytes == 0){
 		return NULL;
-	}
-
-	if(nbytes < MAX_SIZE_BLOCK && nbytes % SIZE_OF_BLOCK == 0){
+	} 
+/*
+	if(nbytes < MAX_SIZE_BLOCK && (nbytes % SIZE_OF_BLOCK == 0)){
 		int indexOf = (nbytes / SIZE_OF_BLOCK) - 1; // Provides the index of QuickList
 
 		//CHECK if any blocks have been allocated to quick list
@@ -205,7 +205,7 @@ static void *do_malloc (int nbytes) {
                 curr = curr->data.next;
             }
 		}
-	}
+	}*/
 
 	//If no space in Quick List is available, utlilize free list
 
