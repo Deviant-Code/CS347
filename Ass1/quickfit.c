@@ -184,7 +184,7 @@ static void *do_malloc (int nbytes) {
 	//RETURN nothing if # of bytes requested is 0
 	if(nunits == 0){
 		return NULL;
-	} 
+	} /* 
 
 	if(nunits <= 9){
 		int indexOf = (nunits - 1); // Provides the index of QuickList
@@ -206,7 +206,7 @@ static void *do_malloc (int nbytes) {
             }
 		}
 	}
-
+*/
 	//If no space in Quick List is available, utlilize free list
 
 	prev = free_list;
