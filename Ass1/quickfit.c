@@ -273,11 +273,35 @@ void *malloc347 (int nbytes) {
  */
 static void do_free (void *ptr) {
 
-    Header *block, *curr;
+    Header *block, *curr, *tmp;
     int coalesced;
 
     // block points to the header of the freed space
     block = (Header *)ptr - 1;
+
+    //If block-size is 16-144, add it to quicklists
+    if(block->size <= TOTALQUICKLISTS){
+        int indexOf = (block->size - 1); // Provides the index of QuickList
+        //Initialize if not initialized
+        if(quick_list[indexOf] = NULL){
+            *curr = quick_list[indexOf];
+            curr->data.size = block->size;
+            curr->data.next = curr;
+        } else { 
+            curr = quick_list[indexOf];
+            block->data.next = curr;
+            quick_list[indexOf] = block;
+
+            *curr = quick_list[indexOf];
+            *tmp = quick_list[indexOf];
+            while(curr->data.next != tmp){
+                //move along the quick list
+                curr = curr->data.next;
+            }
+            curr->data.next = block;
+        }
+
+    }
 
     // traverse the free-list, place the block in the correct
     // place, to preserve ascending address order
