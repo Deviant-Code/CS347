@@ -32,7 +32,8 @@ typedef union header Header;
 
 // this is the free-list, initially empty
 static Header *free_list = NULL;
-static Header *quick_list[TOTALQUICKLISTS] = NULL;
+
+static Header *quick_list[TOTALQUICKLISTS];
 
 static void do_free (void *ptr);
 
@@ -193,11 +194,13 @@ static void *do_malloc (int nbytes) {
             prev = quick_list[indexOf]->data.next;
             curr = prev->data.next;
             //Check Quick_list until wrapping around
-            while(curr != quick_list[indexOf]{
+            while(curr != quick_list[indexOf]){
+                
                 if(nuits == curr->data.size){
                     prev->data.next = curr->data.next;
                     return (void *)(curr + 1);
                 }
+                
                 prev = curr;
                 curr = curr->data.next;
             }
