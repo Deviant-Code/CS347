@@ -190,7 +190,17 @@ static void *do_malloc (int nbytes) {
 
 		//CHECK if any blocks have been allocated to quick list
 		if(quick_list[indexOf]->data.next != NULL){
-
+            prev = quick_list[indexOf]->data.next;
+            curr = prev->data.next;
+            //Check Quick_list until wrapping around
+            while(curr != quick_list[indexOf]{
+                if(nuits == curr->data.size){
+                    prev->data.next = curr->data.next;
+                    return (void *)(curr + 1);
+                }
+                prev = curr;
+                curr = curr->data.next;
+            }
 		}
 	}
 
