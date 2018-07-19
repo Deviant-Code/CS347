@@ -11,9 +11,9 @@
 #include "HeapTestEngine.h"
 
 #define MINALLOC    1024     // minimum request to sbrk(), Header blocks
-#define TOTALQUICKLISTS  10 // NUMBER OF QUICK LISTS -- INCREMENTED BY 16 BYTES
+#define TOTALQUICKLISTS  9 // NUMBER OF QUICK LISTS -- INCREMENTED BY 16 BYTES
 #define SIZE_OF_BLOCK  16
-#define MAX_SIZE_BLOCK 144
+#define MAX_SIZE_BLOCK 9
 
 typedef double Align[2];     // to force alignment of free-list blocks
                         // with worst-case data boundaries
@@ -182,12 +182,12 @@ static void *do_malloc (int nbytes) {
     nunits = (nbytes - 1) / sizeof(Header) + 1;
 
 	//RETURN nothing if # of bytes requested is 0
-	if(nbytes == 0){
+	if(nunits == 0){
 		return NULL;
 	} 
 
-	if(nbytes < MAX_SIZE_BLOCK && (nbytes % SIZE_OF_BLOCK == 0)){
-		int indexOf = (nbytes / SIZE_OF_BLOCK) - 1; // Provides the index of QuickList
+	if(nunits <= 9){
+		int indexOf = (nunits - 1); // Provides the index of QuickList
 
 		//CHECK if any blocks have been allocated to quick list
 		if(quick_list[indexOf]->data.next != NULL){
