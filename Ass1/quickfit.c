@@ -271,9 +271,7 @@ static void do_free (void *ptr) {
 
     // block points to the header of the freed space
     block = (Header *)ptr - 1;
-    while(block != free_list){
-        System.out.println(block->data.size);
-    }
+
     //If block-size is 16-144, add it to quicklists
     if(block->data.size <= TOTALQUICKLISTS){
         int indexOf = (block->data.size) - 1; // Provides the index of QuickList
@@ -289,35 +287,35 @@ static void do_free (void *ptr) {
             block->data.next = curr;
             quick_list[indexOf]->data.next = block;
         }
-    }
+    } else {
 
-    // traverse the free-list, place the block in the correct
-    // place, to preserve ascending address order
-    curr = free_list;
-    while (block > curr) {
-        if (block < curr->data.next || curr->data.next == free_list) {
+        // traverse the free-list, place the block in the correct
+        // place, to preserve ascending address order
+        curr = free_list;
+        while (block > curr) {
+            if (block < curr->data.next || curr->data.next == free_list) {
 
-            // need to place block between curr and curr->data.next
-            block->data.next = curr->data.next;
-            curr->data.next = block;
+                // need to place block between curr and curr->data.next
+                block->data.next = curr->data.next;
+                curr->data.next = block;
 
-            // attempt to coalesce with the previous block
-            coalesced = 1;
-            if (curr != free_list)
-                // attempt to coalesce with next neighbor
-                coalesced = coalesce(curr);
+                // attempt to coalesce with the previous block
+                coalesced = 1;
+                if (curr != free_list)
+                    // attempt to coalesce with next neighbor
+                    coalesced = coalesce(curr);
 
-            if (!coalesced || curr == free_list)
-                curr = curr->data.next;
+                if (!coalesced || curr == free_list)
+                    curr = curr->data.next;
 
-            coalesce(curr);
-            break;
+                coalesce(curr);
+                break;
+            }
+
+            // move along the free-list
+            curr = curr->data.next;
         }
-
-        // move along the free-list
-        curr = curr->data.next;
     }
-
 }
 
 /*  function free347()
