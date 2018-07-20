@@ -103,8 +103,7 @@ static void dump_quickList () {
             Header *curr = quick_list[index];
             while(1){
                 display_block_QL(curr);
-                curr = curr->data.next;
-                if(curr == NULL || curr == quick_list[index]){
+                if(curr->data.next == NULL || curr->data.next = curr){
                     break;
                 } else {
                     curr = curr->data.next;
