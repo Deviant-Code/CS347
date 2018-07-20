@@ -225,9 +225,9 @@ static void *do_malloc (int nbytes) {
         Header *tmp = quick_list[indexOf];
         //CHECK if quickList is empty
 	       if(tmp == NULL){
-               printf("QuickList is currently Empty: Utilize Free List\n");
+               printf("\nQuickList is currently Empty: Utilize Free List\n");
            } else {
-               printf("There is an free block in quickList for %d units \n", nunits);
+               printf("Free block available in quick list for size: %d units! \n", nunits + 1);
                curr = tmp;
                quick_list[indexOf] = tmp->data.next;
                return (void *)(curr + 1);
