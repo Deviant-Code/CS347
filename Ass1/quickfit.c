@@ -47,13 +47,13 @@ static void display_block (Header *curr) {
 
     // address of this block
     unsigned long curr_addr = (unsigned long)curr;
-
+    printf("1HERE\n");
     // address of next block in the free-list
     unsigned long next_addr = (unsigned long)curr->data.next;
-
+    printf("2HERE\n");
     // address of next block in the heap, possibly an allocated block
     unsigned long next_mem  = curr_addr + (curr->data.size + 1) * sizeof(Header);
-
+    printf("3HERE\n");
     printf("free block:0x%x, %4d units, next free:0x%x next block:0x%x\n",
            (int)curr_addr, curr->data.size + 1, (int)next_addr, (int)next_mem);
 }
@@ -184,28 +184,21 @@ static void *do_malloc (int nbytes) {
 	//RETURN nothing if # of bytes requested is 0
 	if(nunits == 0){
 		return NULL;
-	} 
-
-	if(nunits <= TOTALQUICKLISTS){
-		int indexOf = (nunits - 1); // Provides the index of QuickList
-
-		//CHECK if any blocks have been allocated to quick list
-		if(quick_list[indexOf]->data.next != NULL){
-            prev = quick_list[indexOf]->data.next;
-            curr = prev->data.next;
-            //Check Quick_list until wrapping around
-            while(curr != quick_list[indexOf]){
-                
-                if(nunits == curr->data.size){
-                    prev->data.next = curr->data.next;
-                    return (void *)(curr + 1);
-                }
-
-                prev = curr;
-                curr = curr->data.next;
-            
-		}
 	}
+    if(nunits <=  TOTALQUICKLISTS){
+        int indexOf = (nunits - 1); // Provides the index of QuickList
+        Header *tmp = quick_list[indexOf];
+        //CHECK if quickList is empty
+	       if(tmp == NULL){
+               printf("QuickList is currently Empty: Utilize Free List\n");
+           } else {
+               printf("There is an free block in quickList for %d units \n", nunits);
+               curr = tmp;
+               quick_list[indexOf] = tmp->data.next;
+               return (void *)(curr + 1);
+           }
+    }
+
 
 	//If no space in Quick List is available, utlilize free list
 
@@ -280,27 +273,20 @@ static void do_free (void *ptr) {
     block = (Header *)ptr - 1;
 
     //If block-size is 16-144, add it to quicklists
-    if(block->size <= TOTALQUICKLISTS){
-        int indexOf = (block->size - 1); // Provides the index of QuickList
+    if(block->data.size <= TOTALQUICKLISTS){
+        int indexOf = (block->data.size) - 1; // Provides the index of QuickList
         //Initialize if not initialized
-        if(quick_list[indexOf] = NULL){
-            *curr = quick_list[indexOf];
-            curr->data.size = block->size;
-            curr->data.next = curr;
-        } else { 
+        printf("CHECK\n");
+        if(quick_list[indexOf] == NULL){
+            block->data.next = NULL;
+            quick_list[indexOf] = block;
+            printf("INITIALIZED QUICK_LIST for %d size \n", block->data.size);
+        } else {
+            printf("NOTNULL\n");
             curr = quick_list[indexOf];
             block->data.next = curr;
-            quick_list[indexOf] = block;
-
-            *curr = quick_list[indexOf];
-            *tmp = quick_list[indexOf];
-            while(curr->data.next != tmp){
-                //move along the quick list
-                curr = curr->data.next;
-            }
-            curr->data.next = block;
+            quick_list[indexOf]->data.next = block;
         }
-
     }
 
     // traverse the free-list, place the block in the correct
