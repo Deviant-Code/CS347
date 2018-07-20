@@ -315,9 +315,9 @@ static void do_free (void *ptr) {
             block->data.next = NULL;
             quick_list[indexOf] = block;
              unsigned long curr_addr = (unsigned long)block;
-            printf("Initialized quick_list for %d size. Block address: 0x%x\n", (block->data.size + 1), (int) curr_addr);
+            printf("Initialized quick_list for %d blocks. Block address: 0x%x\n", (block->data.size + 1), (int) curr_addr);
         } else {
-            printf("Adding block to quick_list: %d\n", block->data.size);
+            printf("Adding block to quick_list: %d\n", (block->data.size) + 1;
             curr = quick_list[indexOf];
             block->data.next = curr;
             quick_list[indexOf]->data.next = block;
