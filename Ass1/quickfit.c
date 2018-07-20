@@ -271,7 +271,9 @@ static void do_free (void *ptr) {
 
     // block points to the header of the freed space
     block = (Header *)ptr - 1;
-
+    while(block != free_list){
+        System.out.println(block->data.size);
+    }
     //If block-size is 16-144, add it to quicklists
     if(block->data.size <= TOTALQUICKLISTS){
         int indexOf = (block->data.size) - 1; // Provides the index of QuickList
