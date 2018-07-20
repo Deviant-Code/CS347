@@ -103,7 +103,7 @@ static void dump_quickList () {
             Header *curr = quick_list[index];
             while(1){
                 display_block_QL(curr);
-                if(curr->data.next == NULL || curr->data.next = curr){
+                if(curr->data.next == NULL || curr->data.next == curr){
                     printf("WOW\n");
                     break;
                 } else {
