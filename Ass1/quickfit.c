@@ -37,6 +37,8 @@ static Header *quick_list[TOTALQUICKLISTS];
 
 static void do_free (void *ptr);
 
+static void dump_quickList();
+
 
 /*  function display_block()
  *  displays one block of the free list
@@ -96,8 +98,8 @@ static void dump_freelist () {
 
 static void dump_quickList () {
 
-   for(int index = 0; i < TOTALQUICKLISTS; i++){
-        Header *curr = quick_list[index]
+   for(int index = 0; index < TOTALQUICKLISTS; index++){
+        Header *curr = quick_list[index];
         while(1){
             display_block_QL(curr);
             curr = curr->data.next;
