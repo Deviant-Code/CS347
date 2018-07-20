@@ -47,14 +47,28 @@ static void display_block (Header *curr) {
 
     // address of this block
     unsigned long curr_addr = (unsigned long)curr;
-    printf("1HERE\n");
     // address of next block in the free-list
     unsigned long next_addr = (unsigned long)curr->data.next;
-    printf("2HERE\n");
     // address of next block in the heap, possibly an allocated block
     unsigned long next_mem  = curr_addr + (curr->data.size + 1) * sizeof(Header);
-    printf("3HERE\n");
     printf("free block:0x%x, %4d units, next free:0x%x next block:0x%x\n",
+           (int)curr_addr, curr->data.size + 1, (int)next_addr, (int)next_mem);
+}
+
+/*  function display_block()
+ *  displays one block of the free list
+ *  parameter: curr, pointer to the block
+ *  return: none
+ */
+static void display_block_QL (Header *curr) {
+
+    // address of this block
+    unsigned long curr_addr = (unsigned long)curr;
+    // address of next block in the free-list
+    unsigned long next_addr = (unsigned long)curr->data.next;
+    // address of next block in the heap, possibly an allocated block
+    unsigned long next_mem  = curr_addr + (curr->data.size + 1) * sizeof(Header);
+    printf("Free Block in Quick List:0x%x, %4d units, next free:0x%x next block:0x%x\n",
            (int)curr_addr, curr->data.size + 1, (int)next_addr, (int)next_mem);
 }
 
@@ -76,6 +90,20 @@ static void dump_freelist () {
         if (curr == free_list) break;
     }
     printf("\n");
+    dump_quickList();
+    printf("\n");
+}
+
+static void dump_quickList () {
+
+   for(int index = 0; i < TOTALQUICKLISTS; i++){
+        Header *curr = quick_list[index]
+        while(1){
+            display_block_QL(curr);
+            curr = curr->data.next;
+            if(curr == NULL) break;
+        }
+   }
 }
 
 
