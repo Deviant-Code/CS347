@@ -104,7 +104,7 @@ static void dump_quickList () {
             while(1){
                 display_block_QL(curr);
                 curr = curr->data.next;
-                if(curr == NULL){
+                if(curr == NULL || curr == quick_list[index]){
                     break;
                 } else {
                     curr = curr->data.next;
