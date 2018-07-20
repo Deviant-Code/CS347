@@ -314,9 +314,9 @@ static void do_free (void *ptr) {
         if(quick_list[indexOf] == NULL){
             block->data.next = NULL;
             quick_list[indexOf] = block;
-            printf("Initialized quick_list for %d size \n", block->data.size);
+            printf("Initialized quick_list for %d size \n", (block->data.size + 1));
         } else {
-            printf("Adding block to quick_list: %d", block->data.size);
+            printf("Adding block to quick_list: %d\n", block->data.size);
             curr = quick_list[indexOf];
             block->data.next = curr;
             quick_list[indexOf]->data.next = block;
