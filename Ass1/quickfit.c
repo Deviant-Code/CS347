@@ -99,11 +99,13 @@ static void dump_freelist () {
 static void dump_quickList () {
 
    for(int index = 0; index < TOTALQUICKLISTS; index++){
-        Header *curr = quick_list[index];
-        while(1){
-            display_block_QL(curr);
-            curr = curr->data.next;
-            if(curr == NULL) break;
+        if(quick_list[index] != NULL){
+            Header *curr = quick_list[index];
+            while(1){
+                display_block_QL(curr);
+                curr = curr->data.next;
+                if(curr == NULL) break;
+            }
         }
    }
 }
