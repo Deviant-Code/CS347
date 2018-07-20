@@ -311,13 +311,12 @@ static void do_free (void *ptr) {
     if(block->data.size <= TOTALQUICKLISTS){
         int indexOf = (block->data.size) - 1; // Provides the index of QuickList
         //Initialize if not initialized
-        printf("CHECK\n");
         if(quick_list[indexOf] == NULL){
             block->data.next = NULL;
             quick_list[indexOf] = block;
-            printf("INITIALIZED QUICK_LIST for %d size \n", block->data.size);
+            printf("Initialized quick_list for %d size \n", block->data.size);
         } else {
-            printf("NOTNULL\n");
+            printf("Adding block to quick_list: %d", block->data.size);
             curr = quick_list[indexOf];
             block->data.next = curr;
             quick_list[indexOf]->data.next = block;
