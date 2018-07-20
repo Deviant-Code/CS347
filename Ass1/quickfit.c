@@ -104,8 +104,10 @@ static void dump_quickList () {
             while(1){
                 display_block_QL(curr);
                 if(curr->data.next == NULL || curr->data.next = curr){
+                    printf("WOW\n");
                     break;
                 } else {
+                    printf("GOT HERE\n");
                     curr = curr->data.next;
                 }
             }
