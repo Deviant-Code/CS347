@@ -73,9 +73,10 @@ static void display_block_QL (Header *curr) {
     if((int)(next_addr) == 0){
         printf("Free Block in Quick List:0x%x, %4d units, no other blocks are available in this quicklist, next block:0x%x\n",
            (int)curr_addr, curr->data.size + 1, (int)next_mem);
+    } else {
+        printf("Free Block in Quick List:0x%x, %4d units, next free:0x%x next block:0x%x\n",
+               (int)curr_addr, curr->data.size + 1, (int)next_addr, (int)next_mem);
     }
-    printf("Free Block in Quick List:0x%x, %4d units, next free:0x%x next block:0x%x\n",
-           (int)curr_addr, curr->data.size + 1, (int)next_addr, (int)next_mem);
 }
 
 
