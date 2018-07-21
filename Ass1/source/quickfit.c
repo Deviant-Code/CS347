@@ -97,8 +97,6 @@ static void dump_freelist () {
         if (curr == free_list) break;
     }
     printf("\n");
-    dump_quickList();
-    printf("\n");
 }
 
 static void dump_quickList () {
@@ -116,6 +114,7 @@ static void dump_quickList () {
             }
         }
    }
+   printf("\n");
 }
 
 
@@ -202,6 +201,7 @@ int init_freelist() {
     block->data.next = free_list;
 
     dump_freelist();
+    dump_quickList();
 
     return 0;
 }
@@ -296,7 +296,7 @@ void *malloc347 (int nbytes) {
     // units total includes header
     printf("allocated at 0x%x\n", (unsigned) address);
     dump_freelist();
-
+    dump_quickList();
     return allocated;
 }
 
@@ -371,7 +371,7 @@ void free347 (void *ptr) {
     do_free(ptr);
 
     dump_freelist();
-
+    dump_quickList();
 }
 
 int main (int argc, char *argv[]) {
