@@ -1,11 +1,11 @@
 CC=gcc
-CFLAGS= -Wall -w -g
-INCLUDE:= -Iinclude/
-SOURCE:= source/quickfit.c \
-		 source/HeapTestEngine.o
+CFLAGS=	-Wall -w -g
+INCLUDE:=	-Iinclude/
+SOURCE:=	source/quickfit.	\
+	source/HeapTestEngine.o
 EXE=QuickFit
 
-all: $(EXE)
+all:	$(EXE)
 
 $(EXE):
 	$(CC) $(CFLAGS) $(INCLUDE) $(SOURCE) -o $(EXE)

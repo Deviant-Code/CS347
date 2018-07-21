@@ -71,7 +71,7 @@ static void display_block_QL (Header *curr) {
     // address of next block in the heap, possibly an allocated block
     unsigned long next_mem  = curr_addr + (curr->data.size + 1) * sizeof(Header);
     if((int)(next_addr) == 0){
-        printf("Free Block in Quick List:0x%x, %4d units, no other blocks are available in this quicklist, next block:0x%x\n",
+        printf("Free Block in Quick List:0x%x, %4d units, next free: none available, next block:0x%x\n",
            (int)curr_addr, curr->data.size + 1, (int)next_mem);
     } else {
         printf("Free Block in Quick List:0x%x, %4d units, next free:0x%x next block:0x%x\n",
