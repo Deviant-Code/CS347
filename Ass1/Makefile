@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS= -Wall -w -g
-INCLUDE: -Iinclude/
+INCLUDE:= -Iinclude/
 SOURCE:= source/quickfit.c
 EXE=QuickFit
 
