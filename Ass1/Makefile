@@ -7,5 +7,5 @@ EXE=QuickFit
 
 all: $(EXE)
 
-$(EXE):
+$(EXE): $(SOURCE)
 	$(CC) $(CFLAGS) $(INCLUDE) $(SOURCE) -o $(EXE)
