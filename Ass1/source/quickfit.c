@@ -11,12 +11,9 @@
 #include "HeapTestEngine.h"
 
 #define MINALLOC    1024     // minimum request to sbrk(), Header blocks
-#define TOTALQUICKLISTS  9 // NUMBER OF QUICK LISTS -- INCREMENTED BY 16 BYTES
-#define SIZE_OF_BLOCK  16
-#define MAX_SIZE_BLOCK 9
+#define TOTALQUICKLISTS  9 // Number of quicklists to create, incremented by 16 bytes
 
 typedef double Align[2];     // to force alignment of free-list blocks
-                        // with worst-case data boundaries
 
 // header for free-list entry
 union header {
@@ -30,21 +27,15 @@ union header {
 
 typedef union header Header;
 
-// this is the free-list, initially empty
+// Free list, used for initial malloc calls and after for off-size requests
 static Header *free_list = NULL;
-
+// Quick List, used for malloc calls for size 16 - 144 bytes
 static Header *quick_list[TOTALQUICKLISTS];
 
 static void do_free (void *ptr);
-
 static void dump_quickList();
 
-
-/*  function display_block()
- *  displays one block of the free list
- *  parameter: curr, pointer to the block
- *  return: none
- */
+//Display blocks that are in the free list
 static void display_block (Header *curr) {
 
     // address of this block
@@ -57,11 +48,7 @@ static void display_block (Header *curr) {
            (int)curr_addr, curr->data.size + 1, (int)next_addr, (int)next_mem);
 }
 
-/*  function display_block()
- *  displays one block of the free list
- *  parameter: curr, pointer to the block
- *  return: none
- */
+// Used to display blocks that are in the quick list
 static void display_block_QL (Header *curr) {
 
     // address of this block
@@ -80,13 +67,8 @@ static void display_block_QL (Header *curr) {
 }
 
 
-/*  function dump_freelist()
- *  logs the blocks of the free-list
- *  parameters: none
- *  return: none/* function init_freelist()
- * initializes the free list
- */
 
+// Logs all blocks that are currently available in the freelist
 static void dump_freelist () {
 
     Header *curr = free_list;
@@ -99,6 +81,7 @@ static void dump_freelist () {
     printf("\n");
 }
 
+// Logs all blocks that are currently available in each quick-list (if initialized)
 static void dump_quickList () {
 
    for(int index = 0; index < TOTALQUICKLISTS; index++){
@@ -206,25 +189,22 @@ int init_freelist() {
     return 0;
 }
 
-/* function do_malloc()
- * the real heap allocation function
- * allocates (at least) nbytes of space on the heap
- * parameter: nbytes (int), size of space requested
- * return: address of space allocated on the heap
- */
-
+// Handles allocation of memory for malloc requests.
+// Checks if request is of size 16-144 to determine quicklist of freelist
+// Returns pointer to memory address from malloc call
 static void *do_malloc (int nbytes) {
 
     unsigned int nunits;        // the number of Header-size units required
     Header *curr, *prev;        // used in free-list traversal
 
-    // from nbytes, calculate the number of Header block units
+    // From nbytes, calculate the number of Header block units
     nunits = (nbytes - 1) / sizeof(Header) + 1;
 
-	//RETURN nothing if # of bytes requested is 0
+	// Return nothing if # of bytes requested is 0
 	if(nunits == 0){
 		return NULL;
 	}
+
     if(nunits <=  TOTALQUICKLISTS){
         int indexOf = (nunits - 1); // Provides the index of QuickList
         Header *tmp = quick_list[indexOf];
@@ -239,17 +219,13 @@ static void *do_malloc (int nbytes) {
            }
     }
 
-
 	//If no space in Quick List is available, utlilize free list
-
 	prev = free_list;
     curr = prev->data.next;
 
     while (curr != free_list)  {
-
-        // exact fit
-        if (nunits == curr->data.size)
-        {
+        
+        if (nunits == curr->data.size) { // Exact Fit
             prev->data.next = curr->data.next;
             return (void *)(curr + 1);
         }
@@ -261,7 +237,6 @@ static void *do_malloc (int nbytes) {
             curr->data.size = nunits;
             return (void *)(curr + 1);
         }
-
         // move along to next block
         prev = curr;
         curr = curr->data.next;
@@ -273,22 +248,16 @@ static void *do_malloc (int nbytes) {
         return do_malloc(nbytes);
     else
         return NULL;
-
-
 }
 
-/* function malloc347()
- * a wrapper for do_malloc, with log output
- * allocates (at least) nbytes of space on the heap
- * parameter: nbytes (int), size of space requested
- * return: address of space allocated on the heap
- */
+//Wrapper for domalloc(), 
+//Calls dump_freelist and dump_quicklist to log
+//Bytes available in each
 void *malloc347 (int nbytes) {
 
     int units = (int)((nbytes - 1)/sizeof(Header) + 2);
     printf("malloc %d bytes %d units ",
            nbytes, units);
-
     void *allocated = do_malloc(nbytes);
     unsigned long address = (unsigned long) allocated;
 
@@ -300,10 +269,9 @@ void *malloc347 (int nbytes) {
     return allocated;
 }
 
-/*  function do_free()
- *  adds a previously-allocated space to the free-list
- *  parameter: ptr, void*, address of area being freed
- */
+// Frees up a previously allocated space
+// Checks if size of free'd space is of size 16-144 to add
+// to quick list, else adds it to free list
 static void do_free (void *ptr) {
 
     Header *block, *curr, *tmp;
@@ -347,29 +315,21 @@ static void do_free (void *ptr) {
 
                 if (!coalesced || curr == free_list)
                     curr = curr->data.next;
-
                 coalesce(curr);
                 break;
             }
-
             // move along the free-list
             curr = curr->data.next;
         }
     }
 }
 
-/*  function free347()
- *  wrapper for a call to do_free()
- *  adds a previously-allocated space to the free-list
- *  parameter: ptr, void*, address of area being freed
- */
+//Wrapper for do_free()
+//Logs the bytes in freelist and quicklist
 void free347 (void *ptr) {
-
     unsigned long ptr_address = (unsigned long) ptr;
     printf("free 0x%x\n", (unsigned)ptr_address);
-
     do_free(ptr);
-
     dump_freelist();
     dump_quickList();
 }
