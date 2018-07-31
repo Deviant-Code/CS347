@@ -1,0 +1,140 @@
+
+
+Consider the following makefile:
+
+  objects = count.o list.o data.o
+  countup : $(objects)
+       gcc -Wall -o countup $(objects)
+  %.o : %.c
+      gcc -c -Wall $<
+  clean :
+      rm -f countup $(objects)
+
+On the command:
+
+make
+
+what actions will make take if the file list.c is changed?
+ 
+
+  gcc -Wall -o countup count.o list.o data.o
+  gcc -Wall -c list.c
+  
+  gcc -Wall -c list.c
+ 
+  gcc -Wall -o countup count.o list.o data.o
+
+  gcc -Wall -c list.c
+  gcc -Wall -o countup count.o list.o data.o
+ 
+Question 2
+
+Consider the following makefile:
+
+
+  objects = count.o list.o data.o
+  countup : $(objects)
+      gcc -Wall -o countup $(objects)
+  %.o : %.c
+      gcc -c -Wall $<
+  clean :
+      rm -f countup $(objects)
+
+What happens if you use the command
+
+  make list.o
+ 
+  It depends on the modification times of list.c and list.o 
+
+nothing happens
+ 
+
+make generates an error message
+ 
+
+gcc -Wall -c list.c
+ 
+Question 3
+1 / 1 pts
+
+What does it mean if the setuid bit in an executable file's mode is set?
+  The program can only be run by root
+  The program is owned by root but can be executed by any user
+  The executable may change its uid during execution
+  The program runs with root privileges
+ 
+IncorrectQuestion 4
+0 / 1 pts
+
+A text file prog1 has the following text on its first line:
+
+#! /home/bert/myprog
+
+The file prog1 and the file /home/bert/myprog both have permission bits indicating that the file is executable by any user.  What happens if I run the following command?
+
+./prog1
+  The executable file /home/bert/myprog runs and interprets the rest of the file prog1
+  The executable file prog1 runs and interprets the file /home/bert/myprog
+  The lines in prog1, following the first line are replaced by the entire contents of /home/bert/myprog
+  The lines in prog1, following the first line, contain the source code of /home/bert/myprog
+ 
+Question 5
+1 / 1 pts
+Which of the following functions, all declared in unistd.h directly causes a system call?
+  execle()
+  execv()
+  execl()
+  execlp()
+  execve()
+  execvp()
+ 
+Question 6
+1 / 1 pts
+Which of the following functions, all declared in stdlib.h, enables a child process to run with different environment variables to those of the parent process?
+  execve()
+  execl()
+  execlp()
+  execv()
+  execle()
+  execvp()
+ 
+Question 7
+1 / 1 pts
+What happens if a process which has never called fork(), declared in stdlib.h, calls wait(), declared in sys/wait.h?
+  The process is blocked until it calls fork()
+  The process continues with its next instruction
+  The process is blocked indefinitely
+  The process is blocked until its child process terminates
+ 
+IncorrectQuestion 8
+0 / 1 pts
+What does the execvp() function, declared in stdlib.h, actually do?
+  It calls exeve() with the array of environment variables as its third parameter
+  It makes a system call to start execution of the program specified as its first parameter
+  It determines the path of the file that is to be executed and calls execv() with that path as its first argument
+  It makes an array of command-line arguments and calls execv() with that array as its second parameter
+ 
+Question 9
+1 / 1 pts
+
+If I create a file called stuff, using some text editor, and then, in a terminal window running the bash command-line interpreter, I enter the command:
+
+./stuff
+
+I get the message "permission denied".
+
+Why?
+  The file has not been compiled
+  bash cannot interpret the text in the file
+  I do not have execute permission for a new file
+  I forgot to put #! in the first line of the file
+ 
+Question 10
+1 / 1 pts
+
+Which of the following resources are shared by a process and a child process?
+  The current working directory
+  Process identification
+  Environment variables
+  The return value of fork()
+

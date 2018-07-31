@@ -1,0 +1,96 @@
+
+
+Each process is identified by a pid.  What type of value is the pid?
+  string
+  boolean
+  integer
+  char
+ 
+Question 2
+
+What does it mean when the return value from a call to fork() is positive?
+  The call to fork() failed
+  The process has just been created by a parent process
+  The process has just spawned a child process
+  The return value is a count of the number of processes created by the call to fork()
+ 
+Question 3
+
+A C program is run from the shell command:
+	doit -k able baker
+given that the declaration for main() is
+	int main(int argc, char *argv[]);
+what is the value of arv[4]?
+  
+  the null string
+  "baker"
+  it is underfined
+  reference to argv[4] will cause a compile error
+ 
+Question 4
+
+What is the difference between the library calls exit() and _exit()?
+   exit() is a system call, but _exit() is not
+  _exit() closes files and flushes buffers, but exit() does not
+  _exit() is a system call, but exit() is not
+  exit() closes files and flushes buffers, but _exit() does not
+ 
+Question 5
+
+In the C memory model, which parts of a program's memory allocation can change size during program execution?  Select all possible correct answers.
+  heap
+  data segment
+  text segment
+  stack
+ 
+Question 6
+
+Which of the following are advantages of using shared libraries?  Select all asnwers that seem correct.
+  Faster execution
+  Reduction in the size of the program's run-time stack
+  No need to rebuild application programs when a library routine is updated
+  Reduction of size of executable files
+ 
+Question 7
+
+Consider the following C statements (assuming that MAX is big enough for whatever is being done):
+
+  char name[MAX] = getenv("PWD");
+  strcat(name, ":");
+  strcat(name, getenv("PATH"));
+  setenv("PATH", name, 1);
+
+What happens when these statements are executed as part of a C program:
+  The current directory is added to the front of the value of the PATH variable
+  The program changes to the directory specified by the PATH variable
+  The PATH variable is set to the current directory
+  The current directory is added to the end of the value of the PATH variable
+ 
+Question 8
+
+Which of the following is included in the stack frame associated with a function call?  (Choose all that seem correct).
+  Executable code for the function
+  Parameter values
+  Static variables
+  Return address
+ 
+Question 9
+
+Given the following function call:
+
+void *p = calloc(m, n);
+
+Which of the following calls to malloc() is equivalent?
+  malloc(m * sizeof(n));
+  malloc(sizeof(m*n));
+  malloc(m + n);
+  malloc(m * n);
+ 
+Question 10
+
+A child process has just been created.  What happens if the first instruction executed by that process assigns a value to a variable?
+  The OS gives the child its own copy of the page of parent process address space containing    	that variable
+  The OS aborts the child process
+  The variable becomes inaccessible to the parent
+  The parent process sees the changed value of the variable
+

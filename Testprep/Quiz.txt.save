@@ -1,0 +1,81 @@
+
+What is the kernel of an operating system?  Choose all answers that seem correct.
+	A. The software interface with the hardware
+	B. The application program interface
+	C. The part of the operating system that handles interrupts
+	D. The collection of utilities and tools, such as compilers, editors and debuggers.
+ 
+
+What is an operating system shell program?
+	A. The software interface with the hardware
+	B. The one part of the operating system that is always running
+	C. The command-line interpreter
+	D. The application program interface
+ 
+
+What is a system call?
+  A. A command with no arguments
+  B. A command which determines the termination condition of a program
+  C. A command which queries the state of the operating system
+  D/An entry point to the kernel
+ 
+Question 4
+1 / 1 pts
+What is the purpose of a #define directive in a C program?
+  It is used to define other files that must be included in the compilation
+  It is used to define functions
+  It is used to define string replacements in the source code
+  It is used to define which C file contains the main() function
+ 
+Question 5
+1 / 1 pts
+
+Question What is wrong with the following #define from a C program?
+
+
+#define sqr(A) A * A
+  You cannot use extraneous spaces. It should be: #define sqr(A) A*A
+  It does not take into account operator precedence problems amd should be: #define sqr(A) (A) * (A)
+  Names defined in #define directives must always be in upper-case, so it should be: #define SQR(A) A * A
+  There is nothing wrong with the directive as written
+ 
+Question 6
+1 / 1 pts
+What does the static modifier do in the declaration of a variable which is local to a function in C?
+  It does nothing, because local variables are all static by default
+  It causes a syntax error
+  It specifies that the variable will retain its value between function calls
+  It specifies that the variable is reinitialized each time the function is called
+ 
+Question 7
+1 / 1 pts
+What is the difference between the declaration and the definition of a function in C?
+  The definition causes storage to be allocated to the function, but the definition just specifies the function type
+  The definition contains the function body, but the declaration contains just the heading
+  The declaration contains the function body, but the definition contains just the heading
+  There is no real difference, it just depends on which book you read
+ 
+Question 8
+1 / 1 pts
+What services does the operating system need to provide to enable multiprogramming? Choose all answers that seem correct.
+  Multiple compilers
+  Memory management
+  Process scheduling
+  I/O management
+ 
+Question 9
+1 / 1 pts
+What is the purpose of dual-mode operation of a computer?  Choose all answers that seem correct.
+  To facilitate dual-core hardware
+  To restrict the instructions that can be performed by the kernel
+  To restrict the instructions that can be performed by a user process
+  To limit the size of the kernel
+ 
+Question 10
+1 / 1 pts
+In comparing dynamic linking to static linking, which of the following statements is true?  Choose all that seem correct.
+  Dynamic linking is performed at run-time, whicle static linking is done at compile-time
+  Static linking ensures that the executable file always contains the latest version of the library object code
+  Dynamic linking leads to smaller executable files
+  Dynamic linking leads to faster executable programs
+
