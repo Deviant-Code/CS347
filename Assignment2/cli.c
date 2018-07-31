@@ -97,11 +97,11 @@ char** buildStatement(){
 //Changes directory and outputs the resulting change to stdout
 void changeDirectory(char* newDir, int argCount){
 
-	if(argCount == 1 || strcmp(newDir, "~") == 0){
-		newDir = getenv("HOME");
-	} else if(argCount > 2){
+	if(argCount > 2){
 		printf("too many arguments\n");
 		return;
+	} else if(argCount == 1 || strcmp(newDir, "~") == 0){
+		newDir = getenv("HOME");
 	}
 
 	char directory[NAME_MAX + 1];
@@ -111,6 +111,7 @@ void changeDirectory(char* newDir, int argCount){
 	//Else attempt to change and output result
 	if(!strcmp(directory, newDir) == 0){
 		if(chdir(newDir) == 0){
+			getcwd(directory, NAME_MAX);
 		    printf("cwd changed to %s\n", directory);
 		} else {
 		    printf("%s: \"%s\"\n", strerror(errno), newDir);
