@@ -33,14 +33,15 @@ char** buildStatement();
 char* commands[] = {"cd", "listf", "exit", "pwd", "calc"};
 void handleStatement();
 int argCount(char**);
+void initializeDirectories();
 
-char homeDirectory[NAME_MAX + 1];
+char listfDirectory[NAME_MAX + 1];
 
 int main(int argc, char* argv[]){
-	getcwd(homeDirectory,NAME_MAX); // initialize starting directory.
+    initializeDirectories();
 	char* command = "";
     while(strcmp(command, "exit") != 0){
-        
+
         printf("$> ");
         char **statement = buildStatement();
         command = statement[0];
@@ -52,6 +53,11 @@ int main(int argc, char* argv[]){
         }
 
     }
+}
+
+void initializeDirectories(){
+    getcwd(listfDirectory,NAME_MAX); // initialize starting directory.
+    strcat(listfDirectory, "/./listf");
 }
 
 void handleStatement(char** statement){
@@ -131,18 +137,10 @@ void pwd(){
 
 void listf(char** options){
     pid_t child_pid;
-  //  int child_status;
-
     child_pid = fork();
     if(child_pid == 0){
         //CHILD PROCESS
-    	char listfDir[NAME_MAX];
-  	 	strcat(listfDir, homeDirectory);
-		strcat(listfDir, "./listf"); 
-		printf("%s\n", listfDir);
-        execv(listfDir,options);
-                printf("CHILD PROCESS HERE\n");
-
+        execv(listfDirectory,options);
         _exit(0);
     } else {
         wait(&child_pid);
@@ -161,4 +159,3 @@ bool checkCommand(char* string){
 	}
 	return false;
 }
-
