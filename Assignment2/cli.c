@@ -28,14 +28,16 @@ This program provides a command line interface with support for multiple command
 bool checkCommand(char*);
 void changeDirectory(char*, int argCount);
 void pwd();
-void listf(char*);
+void listf(char**);
 char** buildStatement();
 char* commands[] = {"cd", "listf", "exit", "pwd", "calc"};
 void handleStatement();
 int argCount(char**);
 
+char homeDirectory[NAME_MAX + 1];
+
 int main(int argc, char* argv[]){
-	
+	getcwd(homeDirectory,NAME_MAX); // initialize starting directory.
 	char* command = "";
     while(strcmp(command, "exit") != 0){
         
@@ -60,8 +62,8 @@ void handleStatement(char** statement){
         changeDirectory(statement[1], args);
     } else if (strcmp(command, "pwd") == 0){
         pwd();
-    } else if(strcmp(command, "listf")){
-    	listf(statement[1]);
+    } else if(strcmp(command, "listf") == 0){
+    	listf(statement);
     }
 }
 
@@ -127,15 +129,27 @@ void pwd(){
     printf("%s\n", directory);
 }
 
-void listf(char* option){
+void listf(char** options){
     pid_t child_pid;
   //  int child_status;
 
     child_pid = fork();
     if(child_pid == 0){
         //CHILD PROCESS
+    	char listfDir[NAME_MAX];
+  	 	strcat(listfDir, homeDirectory);
+		strcat(listfDir, "./listf"); 
+		printf("%s\n", listfDir);
+        execv(listfDir,options);
+                printf("CHILD PROCESS HERE\n");
+
+        _exit(0);
     } else {
         wait(&child_pid);
+
+        if(WIFEXITED(child_pid)){ // Check if child exited normally
+
+        }
     }
 }
 
