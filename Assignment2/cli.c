@@ -34,6 +34,7 @@ char* commands[] = {"cd", "listf", "exit", "pwd", "calc"};
 void handleStatement();
 int argCount(char**);
 void initializeDirectories();
+bool listfFormat(char**);
 
 char listfDirectory[NAME_MAX + 1];
 
@@ -136,19 +137,46 @@ void pwd(){
 }
 
 void listf(char** options){
-    pid_t child_pid;
-    child_pid = fork();
-    if(child_pid == 0){
-        //CHILD PROCESS
-        execv(listfDirectory,options);
-        _exit(0);
-    } else {
-        wait(&child_pid);
+    if(listfFormat(options)){
+	    pid_t child_pid;
+	    child_pid = fork();
+	    if(child_pid == 0){
+	        //CHILD PROCESS
+	        execv(listfDirectory,options);
+	        _exit(0);
+	    } else {
+	        wait(&child_pid);
 
-        if(WIFEXITED(child_pid)){ // Check if child exited normally
+	        if(WIFEXITED(child_pid)){ // Check if child exited normally
 
-        }
-    }
+	        }
+	    }
+	}
+}
+
+//checks format and specifiers before listf command executes
+bool listfFormat(char** options){
+	int index = 1;
+	while(options[index] != NULL){
+		if(options[index][0] != '-'){
+			printf("incorrect format for 'listf'\n");
+			return false;
+		}
+
+		int index2 = 1;
+		while(options[index][index2] != 0){
+			if(!(options[index][index2] == 'l' || options[index][index2] == 'm' ||
+				options[index][index2] == 'a' || options[index][index2] == 'c' )){
+				printf("specifier: %c not recognized for 'listf'\n", options[index][index2]);
+				return false;
+			}
+			index2++;
+		}
+		index++;
+	}
+	return true;
+
+
 }
 
 bool checkCommand(char* string){
