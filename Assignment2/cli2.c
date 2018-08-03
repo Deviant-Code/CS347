@@ -31,7 +31,7 @@ bool checkCommand(char*);
 void changeDirectory(char*, int argCount);
 void pwd();
 void listf();
-char **buildStatement();
+void buildStatement();
 char* commands[] = {"cd", "listf", "exit", "pwd", "calc"};
 void handleStatement();
 int argCount();
@@ -41,10 +41,8 @@ char *buildShellCommand();
 void calc();
 bool redirectOutput();
 void restoreStd();
-void joinStatement(char**, int);
 char calcDirectory[NAME_MAX +1];
 char listfDirectory[NAME_MAX + 1];
-char currDir[NAME_MAX + 1];
 
 int saved_stdout;
 int saved_stdin;
@@ -54,10 +52,9 @@ char **statement;
 int main(int argc, char* argv[]){
     initializeDirectories();
 	char* command = "";
-    printf("$> ");
     while(strcmp(command, "exit") != 0){
-        statement = buildStatement();
-
+        printf("$> ");
+        buildStatement();
         if(statement[0] != NULL){
             command = statement[0];
             if(redirectOutput()){
@@ -66,7 +63,6 @@ int main(int argc, char* argv[]){
             } else {
             	handleStatement();
             }
-            printf("$> ");
 
         }
     }
@@ -78,29 +74,26 @@ void initializeDirectories(){
     strcat(listfDirectory, "/./listf");
     getcwd(calcDirectory,NAME_MAX); // initialize starting directory.
     strcat(calcDirectory, "/./calc");
-    
+
     saved_stdout = dup(1);
     saved_stdin = dup(0);
 }
 
 void handleStatement(){
-	if(statement[0] != NULL){
-		char *command = statement[0];
-		int args = argCount(statement);
-
-		if(strcmp(command, "cd") == 0){
-		    changeDirectory(statement[1], args);
-		} else if (strcmp(command, "pwd") == 0){
-		    pwd();
-		} else if(strcmp(command, "listf") == 0){
-			listf(statement);
-		} else if(strcmp(command, "calc") == 0){
-		    calc();
-		} else {
-		    //else try as shell command
-		    char* shellCommand = buildShellCommand();
-		    system(shellCommand);
-		}
+	char *command = statement[0];
+	int args = argCount(statement);
+	if(strcmp(command, "cd") == 0){
+        changeDirectory(statement[1], args);
+    } else if (strcmp(command, "pwd") == 0){
+        pwd();
+    } else if(strcmp(command, "listf") == 0){
+    	listf(statement);
+    } else if(strcmp(command, "calc") == 0){
+        calc(statement);
+    } else {
+        //else try as shell command
+        char* shellCommand = buildShellCommand();
+        system(shellCommand);
 	}
 
 }
@@ -129,14 +122,10 @@ bool redirectOutput(){
 
 		} else if(strcmp(statement[index], "<") == 0){
 			if(statement[index + 1] != NULL){
-				if(fopen(statement[index + 1], "r")){
-					int fd = open(statement[index + 1], O_RDONLY);
-					dup2(fd, 0);
-					char **appendSt = buildStatement();
-					joinStatement(appendSt, index);
-				
-					flag = true;
-				}
+				int fd = open(statement[index + 1], O_RDONLY);
+				dup2(fd, 0);
+				buildStatement();
+				flag = true;
 			} else {
 				printf("No file specified for redirect\n");
 				return false;
@@ -148,50 +137,18 @@ bool redirectOutput(){
 	return flag;
 }
 
-void joinStatement(char **append, int index){
-
-	char **newStatement = malloc(MAX_COMMAND);
-	
-	int statIndex = 0;
-	while(statIndex < index){
-		newStatement[statIndex] = statement[statIndex];
-		statIndex++;
-	}
-
-
-	int appendIndex = 0;
-	int newIndex = statIndex;
-	statIndex = statIndex +2;
-	while(append[appendIndex] != NULL){
-		newStatement[newIndex] = append[appendIndex];
-		appendIndex++;
-		newIndex++;
-	}
-
-	while(statement[statIndex] != NULL){
-		newStatement[newIndex] = statement[statIndex];
-		newIndex++;
-		statIndex++;
-	}
-
-	statement = newStatement;
-	
-
-}
-
 void calc(){
     pid_t child_pid;
     child_pid = fork();
     if(child_pid == 0){
         //CHILD PROCESS
-        printf("WHY IS THIS NOT WORKING");
         execv(calcDirectory,statement);
         _exit(0);
     } else {
         wait(&child_pid);
 
         if(WIFEXITED(child_pid)){ // Check if child exited normally
-        	printf("NORMAL");
+
         }
     }
 
@@ -220,11 +177,11 @@ int argCount(){
 
 //Retrieves a line (command) of user input and
 //Separates it into tokens, returning array of tokens
-char **buildStatement(){
+void buildStatement(){
 	char *whiteSpace = " \t\n\f\r\v";
+	char** buildStatement = malloc(MAX_COMMAND);
 	char *token;
-	char *input = malloc(MAX_COMMAND);
-	char **buildStatement = malloc(MAX_COMMAND);
+	char *input;
 	fgets(input, MAX_COMMAND, stdin);
 	int index = 0;
 	token = strtok(input, whiteSpace);
@@ -233,7 +190,8 @@ char **buildStatement(){
 		token = strtok(NULL, whiteSpace);
 		index++;
 	}
-	return buildStatement;
+	statement = buildStatement;
+
 }
 
 //Changes directory and outputs the resulting change to stdout
