@@ -38,29 +38,27 @@ bool listfFormat(char**);
 char *buildShellCommand(char**);
 void calc(char**);
 
-char execShellDirectory[NAME_MAX +1];
+char calcDirectory[NAME_MAX +1];
 char listfDirectory[NAME_MAX + 1];
 
 int main(int argc, char* argv[]){
     initializeDirectories();
 	char* command = "";
     while(strcmp(command, "exit") != 0){
-
         printf("$> ");
         char **statement = buildStatement();
         if(statement[0] != NULL){
             command = statement[0];
             handleStatement(statement);
         }
-
     }
 }
 
 void initializeDirectories(){
     getcwd(listfDirectory,NAME_MAX); // initialize starting directory.
     strcat(listfDirectory, "/./listf");
-    getcwd(execShellDirectory,NAME_MAX); // initialize starting directory.
-    strcat(execShellDirectory, "/./execShell");
+    getcwd(calcDirectory,NAME_MAX); // initialize starting directory.
+    strcat(calcDirectory, "/./calc");
 }
 
 void handleStatement(char** statement){
@@ -80,6 +78,23 @@ void handleStatement(char** statement){
         char* shellCommand = buildShellCommand(statement);
         system(shellCommand);
 	}
+}
+
+void calc(char** statement){
+    pid_t child_pid;
+    child_pid = fork();
+    if(child_pid == 0){
+        //CHILD PROCESS
+        execv(calcDirectory,statement);
+        _exit(0);
+    } else {
+        wait(&child_pid);
+
+        if(WIFEXITED(child_pid)){ // Check if child exited normally
+
+        }
+    }
+
 }
 
 //Takes in an array of arguments and builds a shell command
