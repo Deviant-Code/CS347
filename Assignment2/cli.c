@@ -35,7 +35,10 @@ void handleStatement();
 int argCount(char**);
 void initializeDirectories();
 bool listfFormat(char**);
+char *buildShellCommand(char**);
+void calc(char**);
 
+char execShellDirectory[NAME_MAX +1];
 char listfDirectory[NAME_MAX + 1];
 
 int main(int argc, char* argv[]){
@@ -45,12 +48,9 @@ int main(int argc, char* argv[]){
 
         printf("$> ");
         char **statement = buildStatement();
-        command = statement[0];
-
-        if(!checkCommand(statement[0])){
-        	printf("Command not recognized\n");
-        } else {
-        	handleStatement(statement);
+        if(statement[0] != NULL){
+            command = statement[0];
+            handleStatement(statement);
         }
 
     }
@@ -59,6 +59,8 @@ int main(int argc, char* argv[]){
 void initializeDirectories(){
     getcwd(listfDirectory,NAME_MAX); // initialize starting directory.
     strcat(listfDirectory, "/./listf");
+    getcwd(execShellDirectory,NAME_MAX); // initialize starting directory.
+    strcat(execShellDirectory, "/./execShell");
 }
 
 void handleStatement(char** statement){
@@ -71,7 +73,25 @@ void handleStatement(char** statement){
         pwd();
     } else if(strcmp(command, "listf") == 0){
     	listf(statement);
+    } else if(strcmp(command, "calc") == 0){
+        calc(statement);
+    } else {
+        //else try as shell command
+        char* shellCommand = buildShellCommand(statement);
+        system(shellCommand);
+	}
+}
+
+//Takes in an array of arguments and builds a shell command
+char *buildShellCommand(char** statement){
+    char* shellCommand = malloc(NAME_MAX + 1);
+    int index = 0;
+    while(statement[index] != NULL){
+        strcat(shellCommand, statement[index]);
+        strcat(shellCommand, " ");
+        index++;
     }
+    return shellCommand;
 }
 
 //Returns number of tokens in a statement

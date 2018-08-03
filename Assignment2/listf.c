@@ -22,6 +22,15 @@ char directory[NAME_MAX + 1];
 char filePath[NAME_MAX + 1];
 struct dirent **storeFiles;
 
+
+struct maxDigits {
+	int bytes;
+	int links;
+	int user;
+	int group;
+} maxDig;
+
+
 //Argument Flags
 bool lflag, mflag, aflag, cflag = false;
 
@@ -33,9 +42,15 @@ int compareSize();
 void printFiles();
 void printPerm();
 void setFlags(char**);
-void printOwner(int);
-int largestFile();
+char* getOwner(int);
+void largestFile();
 void printSize();
+void printTime(time_t t);
+
+void printOwnerName();
+void printGroupName();
+void printSize();
+void printLinks();
 
 int main(int argc, char* argv[]){
 	setFlags(argv);
@@ -61,7 +76,8 @@ void setFlags(char *argv[]){
 			} else if(argv[index][index2] == 'c'){
 				cflag =true;
 			}
-			index2++;
+			index2++;//Used to find largest file for formatting byte sizes in printFiles()
+//Calculates the largest byte size then totals the digits required for formatting
 		}
 		index++;
 	}
@@ -77,7 +93,7 @@ void sortFiles(){
 	if(d){
 		int index = 0;
 		while((dir = readdir(d)) != NULL) {
-			storeFiles[index] = dir;
+			storeFiles[index] = dir;https://stackoverflow.com/questions/1809399/how-to-format-strings-using-printf-to-get-equal-length-in-the-output
 			index++;
 		}
 		qsort(storeFiles, index, sizeof(*storeFiles),compareSize);
@@ -90,7 +106,7 @@ int compareSize(const void *const A, const void *const B) {
 
 void printFiles(){
 
-	int maxDigits = largestFile();
+	largestFile();
 	int index = 0;
 	while(storeFiles[index] != NULL){
 		filePath[0] = '\0';
@@ -102,12 +118,26 @@ void printFiles(){
 				storeFiles[index]->d_name[0] != '.'){
 				if(lflag){
 					printPerm();
-					printf("%d ",(int)fileInfo.st_nlink); // HardLinks
-					printOwner(fileInfo.st_uid);
-					printOwner(fileInfo.st_gid);
-					printSize(maxDigits);
+					printLinks();
+					printOwnerName();
+					printGroupName();
+					printSize();
+					if(mflag || !(aflag || cflag)){
+						printf("M");
+						printTime(fileInfo.st_mtime);
+					}
+
+					if(aflag){
+						printf("A");
+						printTime(fileInfo.st_atime);
+					}
+
+					if(cflag){
+						printf("C");
+						printTime(fileInfo.st_ctime);
+					}
+					printf(" "); // adds buffer before filename
 				}
-				
 				printf("%s\n",storeFiles[index]->d_name);
 			}
 		}
@@ -116,14 +146,37 @@ void printFiles(){
 
 }
 
-void printSize(int largestFile){
-	printf("%*ld ", largestFile, fileInfo.st_size);
+void printSize(){
+	printf("%*ld ", maxDig.bytes, fileInfo.st_size); //bytes -- right justify
 }
 
-//Used to find largest file for formatting byte sizes in printFiles()
-//Calculates the largest byte size then totals the digits required for formatting
-int largestFile(){
-	long largestFile = 0;
+
+void printOwnerName(){
+	struct passwd *pwd = getpwuid(fileInfo.st_uid);
+	printf("%-*s ", maxDig.user, pwd->pw_name); // groupName -- left justify
+}
+
+void printGroupName(){
+	struct group *grp = getgrgid(fileInfo.st_gid);
+	printf("%-*s ", maxDig.group, grp->gr_name); // groupName -- left justify
+}
+
+void printLinks(){
+	printf("%*d ", maxDig.links, (int)fileInfo.st_nlink); // HardLinks -- right justify
+}
+
+void printTime(time_t t){
+	struct tm lt;
+	localtime_r(&t, &lt);
+	char timbuf[80];
+	strftime(timbuf, sizeof(timbuf), "%D-%R", &lt);
+	printf("%s ", timbuf);
+}
+
+//Checks for the largest file metadata and stores the max digits required
+//in struct maxDig to be used for formatting the listf func
+void largestFile(){
+
 	int index = 0;
 	while(storeFiles[index] != NULL){
 		filePath[0] = '\0';
@@ -133,29 +186,45 @@ int largestFile(){
 		if(!stat(filePath, &fileInfo)){
 			if((S_ISREG(fileInfo.st_mode) || S_ISDIR(fileInfo.st_mode)) &&
 				storeFiles[index]->d_name[0] != '.'){
-				if((long)fileInfo.st_size > largestFile){
-					largestFile = fileInfo.st_size;
+
+				if((long)fileInfo.st_size > maxDig.bytes){
+					maxDig.bytes = fileInfo.st_size;
 				}
-		 	}
+
+				if((long)fileInfo.st_nlink > maxDig.links){
+					maxDig.links = fileInfo.st_nlink;
+				}
+
+				int ownerNameL = strlen(getpwuid(fileInfo.st_uid)->pw_name);
+				int groupNameL = strlen(getgrgid(fileInfo.st_gid)->gr_name);
+
+				if(ownerNameL > maxDig.user){
+					maxDig.user = ownerNameL;
+				}
+
+				if(groupNameL > maxDig.group){
+					maxDig.group = groupNameL;
+				}
+			}
 		}
 		index++;
 	}
 
+	//Calculates the number of digits required to represent largest byte count
 	int digitCount = 0;
-	while(largestFile > 0){
-		largestFile /= 10;
+	while(maxDig.bytes > 0){
+		maxDig.bytes /= 10;
 		digitCount++;
 	}
+	maxDig.bytes = digitCount;
 
-	return digitCount;
-
-
-}
-
-//Takes in a user / group id and prints the name of user / group
-void printOwner(int id){
-	struct passwd *pw = getpwuid(fileInfo.st_uid);
-	printf("%s ", pw->pw_name);
+	//Calculates the number of digits required to represent largest link count
+	digitCount = 0;
+	while(maxDig.links > 0){
+		maxDig.links /= 10;
+		digitCount++;
+	}
+	maxDig.links = digitCount;
 
 }
 
