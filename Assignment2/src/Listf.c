@@ -23,7 +23,8 @@ char directory[NAME_MAX + 1];
 char filePath[NAME_MAX + 1];
 struct dirent **storeFiles;
 
-
+//Holds the longest metadata for files in a directory
+//Used to format strings to max length of largest file   
 struct maxDigits {
 	int bytes;
 	int links;
@@ -35,6 +36,7 @@ struct maxDigits {
 //Argument Flags
 bool lflag, mflag, aflag, cflag = false;
 
+//For adding supported arguments down the road.
 #define MAX_ARGS 4
 
 
@@ -44,7 +46,7 @@ int main(int argc, char* argv[]){
 	sortFiles();
 	printFiles();
 	closedir(d);
-	return 1;
+	return 0;
 }
 
 //checks arguments passed from listf and sets the according flags
@@ -62,13 +64,13 @@ void setFlags(char *argv[]){
 			} else if(argv[index][index2] == 'c'){
 				cflag =true;
 			}
-			index2++;//Used to find largest file for formatting byte sizes in printFiles()
-//Calculates the largest byte size then totals the digits required for formatting
+			index2++;
 		}
 		index++;
 	}
 }
 
+//Initialize current working directory dirent for storing files
 void initializeDirectories(){
 	getcwd(directory, NAME_MAX);
 	d = opendir(directory);

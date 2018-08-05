@@ -58,8 +58,10 @@ int main(int argc, char* argv[]){
 
         }
     }
+    return 0;
 }
 
+//Initializes saved directories of executables and saves stdin and stdout for redirection
 void initializeDirectories(){
 	statement = malloc(MAX_COMMAND);
     getcwd(listfDirectory,NAME_MAX); // initialize starting directory.
@@ -93,6 +95,7 @@ void handleStatement(){
 
 }
 
+//Used to restore stdin and stdout to default
 void restoreStd(){
 	close(1);
 	close(0);
@@ -100,6 +103,7 @@ void restoreStd(){
 	dup2(saved_stdin, 0);
 }
 
+//Returns true if output or input has been redirected
 bool redirectOutput(){
 	bool flag = false;
 	int index = 0;
@@ -130,12 +134,13 @@ bool redirectOutput(){
 				return false;
 			}
 		}
-
 		index++;
 	}
 	return flag;
 }
 
+//Appends char** type to char**
+//Used for appending input redirection onto existing input
 void joinStatement(char **append, int index){
 
 	char **newStatement = malloc(MAX_COMMAND);
@@ -161,12 +166,11 @@ void joinStatement(char **append, int index){
 		newIndex++;
 		statIndex++;
 	}
-
 	statement = newStatement;
-	
 
 }
 
+//Creates child process to run ./Calc for calculator functionality
 void calc(){
     pid_t child_pid;
     child_pid = fork();
@@ -183,7 +187,6 @@ void calc(){
         	perror("Child exited abnormally in calc\n");
         }
     }
-
 }
 
 //Takes in an array of arguments and builds a shell command
@@ -299,10 +302,9 @@ bool listfFormat(){
 		index++;
 	}
 	return true;
-
-
 }
 
+//Returns true if command parsed is a valid command
 bool checkCommand(char* string){
 	for(int i = 0; i < TOT_COMMANDS; i++){
 		if(strcmp(string, commands[i]) == 0){
