@@ -3,12 +3,15 @@
 Jesse Ericksen
 Assignment 2
 CSCI 347, Summer 2018
-
+_______________________________________________________________________________________________
 This program provides a command line interface with support for multiple commands listed below:
     - cd : cd <path> // Changes directory to the path inputted
-    -
+    - pwd : prints current working directory
+    - listf : prints files within cwd and their respective metadata
+    - calc : opens up calc function. supports input from  command line or after calc call
 
-
+For information and help using these functions, refer to readme.txt
+________________________________________________________________________________________________
 */
 
 #include <unistd.h>
