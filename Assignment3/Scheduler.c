@@ -47,7 +47,7 @@ int main(int argc, char *argv[]){
 
 }
 
-int intCond(){
+int initCond(){
 
 	if(pthread_barrier_init(&barrier, NULL, clientProcesses + 1)){
 		printf("Error initializing barrier\n");
@@ -87,9 +87,9 @@ int initializeVal(int argc, char *argv[]){
 
 int initThreads(){
 
-	scheduler = malloc(sizeof(pthread_t));
-	deviceDriver = malloc(sizeof(pthread_t));
-	clientThread = malloc(clientProcesses * sizeof(pthread_t));
+	*scheduler = malloc(sizeof(pthread_t));
+	*deviceDriver = malloc(sizeof(pthread_t));
+	*clientThread = malloc(clientProcesses * sizeof(pthread_t));
 
 	if(pthread_create(&scheduler, NULL, run_scheduler, NULL)){
 		printf("Error creating thread: Scheduler \n");
