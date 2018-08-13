@@ -87,9 +87,9 @@ int initializeVal(int argc, char *argv[]){
 
 int initThreads(){
 
-	*scheduler = malloc(sizeof(pthread_t));
-	*deviceDriver = malloc(sizeof(pthread_t));
-	*clientThread = malloc(clientProcesses * sizeof(pthread_t));
+	scheduler = (pthread_t) malloc(sizeof(pthread_t));
+	deviceDriver = (pthread_t) malloc(sizeof(pthread_t));
+	clientThread = (pthread_t *) malloc(clientProcesses * sizeof(pthread_t));
 
 	if(pthread_create(&scheduler, NULL, run_scheduler, NULL)){
 		printf("Error creating thread: Scheduler \n");
