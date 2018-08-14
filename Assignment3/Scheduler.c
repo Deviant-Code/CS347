@@ -5,17 +5,15 @@
 #include <time.h>
 
 int clientProcesses;
-int iooperations;
+int iorequests;
 
 pthread_mutex_t lock;
 pthread_t scheduler;
 pthread_t deviceDriver;
 
-pthread_t *clientThread;
-
 int initThreads();
 int initializeVal(int, char**);
-int randSleepTime();
+double randSleepTime();
 int initCond();
 void *run_scheduler();
 void *run_deviceDriver();
@@ -24,6 +22,17 @@ void *run_client();
 // Sleep time range for client threads
 int MIN_SLEEP = 5;
 int SLEEP_RANGE = 10;
+/* ************************************************************/
+
+typedef struct{
+	pthread_t			threadID;
+	int 				threadNum;
+	clock_t				startTime;
+	clock_t				endTime;
+	double	 			netTime;
+} ClientThread;
+
+ClientThread *cThreadArgs;
 
 struct threadCountdown {
 	int unfinished;
@@ -72,15 +81,17 @@ int initializeVal(int argc, char *argv[]){
 		printf("Arg1 : # of client processes.\n");
 		printf("Arg2 : # of I/O operations to perform. \n");
 		return -1;
-	} 
+	}
 
 	clientProcesses = atoi(argv[1]);
-	iooperations = atoi(argv[2]);
+	iorequests = atoi(argv[2]);
 
-	if(clientProcesses == 0 || iooperations == 0){
+	if(clientProcesses == 0 || iorequests == 0){
 		printf("Requires positive integers for input\n");
 		return -1;
 	}
+
+
 
 	return 0;
 }
@@ -89,7 +100,7 @@ int initThreads(){
 
 	scheduler = (pthread_t) malloc(sizeof(pthread_t));
 	deviceDriver = (pthread_t) malloc(sizeof(pthread_t));
-	clientThread = (pthread_t *) malloc(clientProcesses * sizeof(pthread_t));
+	ClientThread *cThreadArgs = calloc(clientProcesses, sizeof(ClientThread));
 
 	if(pthread_create(&scheduler, NULL, run_scheduler, NULL)){
 		printf("Error creating thread: Scheduler \n");
@@ -102,7 +113,8 @@ int initThreads(){
 	}
 
 	for(int i = 0; i < clientProcesses; i++){
-		if(pthread_create(&(clientThread[i]), NULL, run_client, NULL)){
+		cThreadArgs[i].threadNum = (i+1);
+		if(pthread_create(&(cThreadArgs[i].threadID), NULL, run_client, &cThreadArgs[i])){
 			printf("Error creating client thread # %d \n", (i+1));
 			return -1;
 		}
@@ -127,22 +139,39 @@ void *run_scheduler(){
 
 }
 
-void *run_client(){
-	printf("I am the client \n");
+void *run_client(void *arg){
+	ClientThread* myThread;
+	clock_t start_t, end_t;
+	double net_t;
 
-	//for(int i = 0; i < iooperations; i++){
 
-	printf("%d\n",randSleepTime());
+	start_t = clock();
+	myThread = (ClientThread*) arg;
+
+	printf("I am the client # %d\n", myThread->threadNum); // TEST
+	myThread->startTime = start_t; // SET START TIME IN STRUCT
+
+	//Sleep for a random period between 5s and 15s between I/O req
+	for(int i = 0; i < iorequests; i++){
+		sleep(randSleepTime());
+	}
+
 	pthread_barrier_wait(&barrier);
+	end_t = clock();
+	myThread->endTime = end_t;
+	net_t = ((double) (end_t - start_t)) / CLOCKS_PER_SEC;
+	printf("We waited %f seconds!!!!\n", net_t);
 
-	printf("We waited!!!!\n");
-	//}
 
 	return 0;
 }
 
-// Returns a random sleep time for client threads.
+
+
+// Returns a random sleep time for client threads in seconds.
 // Range and min sleep time declared in constants
-int randSleepTime(){
-	return rand() % (SLEEP_RANGE + 1) + MIN_SLEEP;
+double randSleepTime(){
+	int randSec = rand() % (SLEEP_RANGE + 1) + MIN_SLEEP;
+	double randMs = (double) randSec / 1000;
+	return randMs;
 }
