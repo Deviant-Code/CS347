@@ -21,9 +21,12 @@ void *run_scheduler();
 void *run_deviceDriver();
 void *run_client();
 
+
+
 // Sleep time range for client threads
 int MIN_SLEEP = 5;
 int SLEEP_RANGE = 10;
+int MAX_CYLINDERS = 16000;
 
 struct threadCountdown {
 	int unfinished;
@@ -43,6 +46,7 @@ int main(int argc, char *argv[]){
 	initThreads();
 
 	pthread_barrier_wait(&barrier);
+
 	return 0;
 
 }
@@ -128,6 +132,8 @@ void *run_scheduler(){
 }
 
 void *run_client(){
+
+	//Start timer before request and end after for variance
 	printf("I am the client \n");
 
 	//for(int i = 0; i < iooperations; i++){
@@ -141,8 +147,17 @@ void *run_client(){
 	return 0;
 }
 
+//Generates a random cylinder number to simulate I/O request randomization
+
+int randomCylinderRequest(){
+	int randNum = rand();
+	randNum %= MAX_CYLINDERS;
+	return randNum;
+}
+
 // Returns a random sleep time for client threads.
 // Range and min sleep time declared in constants
 int randSleepTime(){
+	srand (time(NULL));
 	return rand() % (SLEEP_RANGE + 1) + MIN_SLEEP;
 }
