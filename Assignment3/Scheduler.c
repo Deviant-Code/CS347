@@ -133,7 +133,9 @@ void *run_deviceDriver(){
 
 void *run_scheduler(){
 
-	printf("I am the scheduler, hear me roar!\n");
+	//WAIT ON IO REQ FROM CLIENT AND PASS TO DEVICE DRIVER ! ! ! !
+
+
 	return 0;
 
 
@@ -154,16 +156,24 @@ void *run_client(void *arg){
 	//Sleep for a random period between 5s and 15s between I/O req
 	for(int i = 0; i < iorequests; i++){
 		sleep(randSleepTime());
+		makeReq();
+		//make I/O request from scheduler;
 	}
 
-	pthread_barrier_wait(&barrier);
+	sleep(3);
+	//pthread_barrier_wait(&barrier);
 	end_t = clock();
 	myThread->endTime = end_t;
-	net_t = ((double) (end_t - start_t)) / CLOCKS_PER_SEC;
+	net_t = ((double) (end_t - start_t)) / (double) CLOCKS_PER_SEC;
 	printf("We waited %f seconds!!!!\n", net_t);
 
-
 	return 0;
+}
+
+//Makes an I/O request with scheduler
+void makeReq(){
+
+
 }
 
 
