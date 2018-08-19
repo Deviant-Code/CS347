@@ -6,7 +6,7 @@
 
 int clientProcesses;
 int iorequests;
-
+int randomCylinderRequest();
 pthread_mutex_t lock;
 pthread_t scheduler;
 pthread_t deviceDriver;
@@ -178,9 +178,6 @@ void *run_client(void *arg){
 	return 0;
 }
 
-//Makes an I/O request with scheduler
-void makeReq(){
-
 
 //Generates a random cylinder number to simulate I/O request randomization
 
@@ -188,13 +185,6 @@ int randomCylinderRequest(){
 	int randNum = rand();
 	randNum %= MAX_CYLINDERS;
 	return randNum;
-}
-
-// Returns a random sleep time for client threads.
-// Range and min sleep time declared in constants
-int randSleepTime(){
-	srand (time(NULL));
-	return rand() % (SLEEP_RANGE + 1) + MIN_SLEEP;
 }
 
 
