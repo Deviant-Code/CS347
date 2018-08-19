@@ -19,9 +19,13 @@ void *run_scheduler();
 void *run_deviceDriver();
 void *run_client();
 
+
+
 // Sleep time range for client threads
 int MIN_SLEEP = 5;
 int SLEEP_RANGE = 10;
+int MAX_CYLINDERS = 16000;
+
 /* ************************************************************/
 
 typedef struct{
@@ -52,6 +56,7 @@ int main(int argc, char *argv[]){
 	initThreads();
 
 	pthread_barrier_wait(&barrier);
+
 	return 0;
 
 }
@@ -61,7 +66,6 @@ int initCond(){
 	if(pthread_barrier_init(&barrier, NULL, clientProcesses + 1)){
 		printf("Error initializing barrier\n");
 	}
-
 	if(pthread_mutex_init(&(countdown.lock), NULL)){
 		printf("Error initiating mutex\n");
 		exit(1);
@@ -141,11 +145,15 @@ void *run_scheduler(){
 
 }
 
+void *run_client(){
+
+	//Start timer before request and end after for variance
+	printf("I am the client \n");
+
 void *run_client(void *arg){
 	ClientThread* myThread;
 	clock_t start_t, end_t;
 	double net_t;
-
 
 	start_t = clock();
 	myThread = (ClientThread*) arg;
@@ -174,6 +182,19 @@ void *run_client(void *arg){
 void makeReq(){
 
 
+//Generates a random cylinder number to simulate I/O request randomization
+
+int randomCylinderRequest(){
+	int randNum = rand();
+	randNum %= MAX_CYLINDERS;
+	return randNum;
+}
+
+// Returns a random sleep time for client threads.
+// Range and min sleep time declared in constants
+int randSleepTime(){
+	srand (time(NULL));
+	return rand() % (SLEEP_RANGE + 1) + MIN_SLEEP;
 }
 
 
