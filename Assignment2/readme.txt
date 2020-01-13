@@ -33,6 +33,4 @@ Cli.c Functions:
 
 *pwd : prints current working directory
 
-*cd : Operates the same as UNIX command to navigate through file systems. 
-
-	Supports home directory set in environment if you type cd ~ or cd
+*cd : Operates the same as UNIX command
